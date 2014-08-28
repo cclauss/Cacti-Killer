@@ -8,7 +8,7 @@ from copy import copy
 import json, ui
 
 GAME_FONT = 'AvenirNext-Heavy'
-
+view = 'ipad' if ui.get_screen_size()[0] >= 768 else 'iphone'
 game_character = 'Dog_Face'
 characters = 'Dog_Face Bear_Face Cow_Face Horse_Face Monkey_Face'.split()
 
@@ -374,7 +374,6 @@ class Game (Scene):
 			pass
 
 		curr_high_score = high_scores.get(name, score - 1)
-		view = 'ipad' if ui.get_screen_size()[0] >= 768 else 'iphone'
 		if score >= curr_high_score:
 			high_scores[name] = score
 			if view == 'ipad':
@@ -411,7 +410,6 @@ class Game (Scene):
 		self.player.dead = True
 		self.touch_disabled = True
 		play_effect('Laser_4')
-		view = 'ipad' if ui.get_screen_size()[0] >= 768 else 'iphone'
 		if view == 'ipad':
 			t = TextLayer('Game Over', GAME_FONT, 100)
 			ts = TextLayer('Tap to Play Again', GAME_FONT, 50)
@@ -427,6 +425,7 @@ class Game (Scene):
 			self.effects_layer.add_layer(t)
 			self.effects_layer.add_layer(ts)
 		else:
+			# tabs center text on iPhone
 			t = TextLayer('         Game Over \nTap to Play Again', GAME_FONT, 32)
 			t.frame.center(self.bounds.center())
 			self.delay(2.0, partial(self.__setattr__, 'touch_disabled', False))
