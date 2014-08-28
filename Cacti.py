@@ -10,7 +10,8 @@ import json, ui
 GAME_FONT = 'AvenirNext-Heavy'
 view = 'ipad' if ui.get_screen_size()[0] >= 768 else 'iphone'
 game_character = 'Dog_Face'
-characters = 'Dog_Face Bear_Face Cow_Face Horse_Face Monkey_Face'.split()
+characters = 'Dog_Face Bear_Face Cow_Face'.split()
+characters_row_2 = 'Cat_Face Monkey_Face Hamster_Face'.split()
 
 class SelectACharacterView(ui.View):
 	def __init__(self):
@@ -18,6 +19,8 @@ class SelectACharacterView(ui.View):
 		self.add_subview(self.make_header())
 		for i, character in enumerate(characters):
 			self.add_subview(self.make_button(40 + i * 155, character))
+		for i, character in enumerate(characters_row_2):
+			self.add_subview(self.make_button2(40 + i * 155, character))
 		self.present(style='sheet', hide_title_bar=True)
 
 	@classmethod
@@ -37,6 +40,13 @@ class SelectACharacterView(ui.View):
 	def make_button(cls, x, image_name = 'Dog_Face'):
 		img = ui.Image.named(image_name).with_rendering_mode(ui.RENDERING_MODE_ORIGINAL)
 		button = ui.Button(name=image_name, frame=(x, 160, 128, 128), image=img)
+		button.action=cls.character_tapped
+		return button
+		
+	@classmethod
+	def make_button2(cls, x, image_name = 'Cat_Face'):
+		img = ui.Image.named(image_name).with_rendering_mode(ui.RENDERING_MODE_ORIGINAL)
+		button = ui.Button(name=image_name, frame=(x, 365, 128, 128), image=img)
 		button.action=cls.character_tapped
 		return button
 
