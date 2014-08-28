@@ -19,7 +19,7 @@ class SelectACharacterView(ui.View):
 		for i, character in enumerate(characters):
 			self.add_subview(self.make_button(40 + i * 155, character))
 		self.present(style='sheet', hide_title_bar=True)
-
+    
 	@classmethod
 	def make_header(cls):
 		header = ui.Label(frame = (40, 19.5, 700, 116.5))
@@ -27,12 +27,12 @@ class SelectACharacterView(ui.View):
 		header.text = 'Select A Character'
 		header.font = (GAME_FONT, 50)
 		return header
-
+    
 	@classmethod
 	def character_tapped(cls, sender):
 		game_character = sender.name
 		play_game(sender)
-
+    
 	@classmethod
 	def make_button(cls, x, image_name = 'Dog_Face'):
 		img = ui.Image.named(image_name).with_rendering_mode(ui.RENDERING_MODE_ORIGINAL)
@@ -49,7 +49,13 @@ def play_game(sender):
 
 v = ui.load_view('Cacti')
 v.background_color = (0, 0.02, 0.1)
-v.present(style='full_screen', hide_title_bar=True)
+
+screensize = ui.get_screen_size()
+if screensize[0] > 768:
+	display = 'landscape'
+else:
+	display = 'portrait'
+v.present(orientations=[display], hide_title_bar=True )
 
 class Star (object):
 	def __init__(self):
@@ -65,7 +71,7 @@ class StarField (object):
 		self.stars = []
 		for i in xrange(count):
 			self.stars.append(Star())
-
+    
 	def update(self):
 		removed_stars = set()
 		for star in self.stars:
@@ -77,7 +83,7 @@ class StarField (object):
 			new_star = Star()
 			new_star.y = self.scene.size.h
 			self.stars.append(new_star)
-
+    
 	def draw(self):
 		background(0, 0.02, 0.1)
 		for star in self.stars:
@@ -136,7 +142,7 @@ class Enemy (object):
 		self.t = randint(0, self.fire_freq)
 		self.speed = 1.0 / self.size * 500
 		self.amp = random() * 300
-
+    
 	def update(self, dt):
 		self.y -= self.speed
 		self.x = self.initial_x + sin(self.y / 100) * self.amp
@@ -170,16 +176,16 @@ class Enemy (object):
 						bullet.vx = vx
 						bullet.bullet_type = 3
 						self.scene.enemy_bullets.append(bullet)
-
+    
 	def draw(self):
 		if self.hit:
 			tint(1, 0, 0, self.a)
 		else:
 			tint(self.color.r, self.color.g, self.color.b, self.a)
 		image('Cactus', self.x - self.size/2,
-		self.y - self.size/2, self.size, self.size)
+              self.y - self.size/2, self.size, self.size)
 		tint(1, 1, 1)
-
+    
 	def bbox(self):
 		s = self.size
 		return Rect(self.x - s/2 * 0.9, self.y - s/2 * 0.8, s * 0.9, s * 0.8)
@@ -243,7 +249,7 @@ class Bullet (object):
 		elif self.bullet_type == 3:
 			fill(0, 1, 1)
 			ellipse(self.x - 4, self.y - 4, 8, 8)
-
+    
 	def hit_test(self, rect):
 		return Point(self.x, self.y) in rect
 
@@ -266,30 +272,30 @@ class Game (Scene):
 		self.shot_fired = False
 		self.effects_layer = Layer(Rect(0, 0, self.size.w, self.size.h))
 		self.spawn()
-
+    
 	def spawn(self):
 		self.enemies.append(Enemy(self))
 		self.delay(random() + 0.5, self.spawn)
 		if random() < 0.05:
 			powerup = Powerup(self, choice([0, 1]))
 			self.powerups.append(powerup)
-
+    
 	def draw(self):
 		self.shot_fired = False
 		self.star_field.update()
 		self.star_field.draw()
-
+        
 		removed_bullets = set()
 		removed_enemy_bullets = set()
 		removed_enemies = set()
-
+        
 		fill(1, 1, 0)
 		for bullet in self.bullets:
 			bullet.update()
 			bullet.draw()
 			if bullet.y > 1024:
 				removed_bullets.add(bullet)
-
+        
 		player_rect = self.player.bbox()
 		fill(1, 0, 1)
 		for bullet in self.enemy_bullets:
@@ -301,7 +307,7 @@ class Game (Scene):
 				removed_enemy_bullets.add(bullet)
 				self.energy -= 10
 				play_effect('Explosion_6')
-
+        
 		for enemy in self.enemies:
 			enemy.update(self.dt)
 			enemy.draw()
@@ -325,7 +331,7 @@ class Game (Scene):
 					self.energy -= 10
 			if enemy.removed:
 				removed_enemies.add(enemy)
-
+        
 		removed_powerups = set()
 		for powerup in self.powerups:
 			powerup.update()
@@ -341,15 +347,15 @@ class Game (Scene):
 				removed_powerups.add(powerup)
 			elif powerup.y < -32:
 				removed_powerups.add(powerup)
-
+        
 		map(self.powerups.remove, removed_powerups)
 		map(self.enemies.remove, removed_enemies)
 		map(self.bullets.remove, removed_bullets)
 		map(self.enemy_bullets.remove, removed_enemy_bullets)
-
+        
 		if not self.player.dead and self.energy <= 0:
 			self.game_over()
-
+        
 		if not self.player.dead:
 			self.player.update()
 			self.player.draw()
@@ -357,22 +363,22 @@ class Game (Scene):
 		self.effects_layer.update(self.dt)
 		self.effects_layer.draw()
 		tint(1, 1, 1)
-
+        
 		self.frame_count += 1
 		if not self.player.dead and len(self.touches) > 0:
 			if self.frame_count % 12 == 0:
 				self.fire()
-
+    
 	def high_score(self, name, score):
 		file_name = 'highscores.json'
 		high_scores = {}
-
+        
 		try:
 			with open(file_name) as in_file:
 				high_scores = json.load(in_file)
 		except IOError:
 			pass
-
+        
 		curr_high_score = high_scores.get(name, score - 1)
 		if score >= curr_high_score:
 			high_scores[name] = score
@@ -386,26 +392,26 @@ class Game (Scene):
 			self.effects_layer.add_layer(h)
 			with open(file_name, 'w') as out_file:
 				json.dump(high_scores, out_file)
-
+    
 	def get_score(self, name, score):
 		file_name = 'highscores.json'
 		high_scores = {}
-
+        
 		try:
 			with open(file_name) as in_file:
 				high_scores = json.load(in_file)
 		except IOError:
 			pass
-
+        
 		curr_high_score = high_scores.get(name, score - 1)
 		if score >= curr_high_score:
 			high_scores[name] = score
 			text('Best: ' + str(self.score), GAME_FONT, 20,
-			self.size.w / 2, self.size.h - 27)
+                 self.size.w / 2, self.size.h - 27)
 		else:
 			text('Best: ' + str(curr_high_score), GAME_FONT, 20,
-			self.size.w / 2, self.size.h - 27)
-
+                 self.size.w / 2, self.size.h - 27)
+    
 	def game_over(self):
 		self.player.dead = True
 		self.touch_disabled = True
@@ -434,7 +440,7 @@ class Game (Scene):
 			t.animate('scale_y', 1.0, 1.0, curve=curve_bounce_out)
 			self.effects_layer.add_layer(t)
 		self.high_score('P1', int(self.score))
-
+    
 	def touch_began(self, touch):
 		if self.player.dead and not self.touch_disabled:
 			play_effect('Powerup_1')
@@ -443,7 +449,7 @@ class Game (Scene):
 		elif not self.player.dead:
 			self.frame_count = 0
 			self.fire()
-
+    
 	def fire(self):
 		if self.shot_fired: return
 		if self.frenzy:
@@ -459,12 +465,11 @@ class Game (Scene):
 			self.bullets.append(bullet)
 		play_effect('Laser_6')
 		self.shot_fired = True
-
+    
 	def draw_status_bar(self):
 		hue = (self.energy / 100.0) * 0.35 + 1.0
 		r, g, b = hsv_to_rgb(hue, 1, 1)
 		fill(r, g, b)
 		rect(0, self.size.h - 5, self.energy / 100.0 * self.size.w, 10)
-		text(str(self.score), GAME_FONT, 40,
-		self.size.w / 2, self.size.h - 65)
-		self.get_score('P1', int(self.score))
+		text(str(self.score), GAME_FONT, 40, self.size.w / 2, self.size.h - 65)
+        self.get_score('P1', int(self.score))
