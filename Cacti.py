@@ -7,6 +7,8 @@ from functools import partial
 from copy import copy
 import json, ui
 
+GAME_FONT = 'AvenirNext-Heavy'
+
 game_character = 'Dog_Face'
 characters = 'Dog_Face Bear_Face Cow_Face Horse_Face Monkey_Face'.split()
 
@@ -23,7 +25,7 @@ class SelectACharacterView(ui.View):
 		header = ui.Label(frame = (40, 19.5, 700, 116.5))
 		header.text_color = 'white'
 		header.text = 'Select A Character'
-		header.font = ('AvenirNext-Heavy', 50)
+		header.font = (GAME_FONT, 50)
 		return header
 
 	@classmethod
@@ -376,10 +378,10 @@ class Game (Scene):
 		if score >= curr_high_score:
 			high_scores[name] = score
 			if view == 'ipad':
-				h = TextLayer('NEW HIGH SCORE', 'AvenirNext-Heavy', 69)
+				h = TextLayer('NEW HIGH SCORE', GAME_FONT, 69)
 				h.frame.center(self.size.w / 2, self.size.h - 300)
 			else:
-				h = TextLayer('NEW HIGH SCORE', 'AvenirNext-Heavy', 35)
+				h = TextLayer('NEW HIGH SCORE', GAME_FONT, 35)
 				h.frame.center(self.size.w / 2, self.size.h - 155)
 			play_effect('Coin_5')
 			self.effects_layer.add_layer(h)
@@ -399,10 +401,10 @@ class Game (Scene):
 		curr_high_score = high_scores.get(name, score - 1)
 		if score >= curr_high_score:
 			high_scores[name] = score
-			text('Best: ' + str(self.score), 'AvenirNext-Heavy', 20,
+			text('Best: ' + str(self.score), GAME_FONT, 20,
 			self.size.w / 2, self.size.h - 27)
 		else:
-			text('Best: ' + str(curr_high_score), 'AvenirNext-Heavy', 20,
+			text('Best: ' + str(curr_high_score), GAME_FONT, 20,
 			self.size.w / 2, self.size.h - 27)
 
 	def game_over(self):
@@ -411,8 +413,8 @@ class Game (Scene):
 		play_effect('Laser_4')
 		view = 'ipad' if ui.get_screen_size()[0] >= 768 else 'iphone'
 		if view == 'ipad':
-			t = TextLayer('Game Over', 'AvenirNext-Heavy', 100)
-			ts = TextLayer('Tap to Play Again', 'AvenirNext-Heavy', 50)
+			t = TextLayer('Game Over', GAME_FONT, 100)
+			ts = TextLayer('Tap to Play Again', GAME_FONT, 50)
 			ts.frame.center(self.size.w / 2, self.size.h - 630)
 			t.frame.center(self.bounds.center())
 			self.delay(2.0, partial(self.__setattr__, 'touch_disabled', False))
@@ -425,7 +427,7 @@ class Game (Scene):
 			self.effects_layer.add_layer(t)
 			self.effects_layer.add_layer(ts)
 		else:
-			t = TextLayer('         Game Over \\nTap to Play Again', 'AvenirNext-Heavy', 32)
+			t = TextLayer('         Game Over \nTap to Play Again', GAME_FONT, 32)
 			t.frame.center(self.bounds.center())
 			self.delay(2.0, partial(self.__setattr__, 'touch_disabled', False))
 			t.scale_x, t.scale_y = 0.0, 0.0
@@ -464,6 +466,6 @@ class Game (Scene):
 		r, g, b = hsv_to_rgb(hue, 1, 1)
 		fill(r, g, b)
 		rect(0, self.size.h - 5, self.energy / 100.0 * self.size.w, 10)
-		text(str(self.score), 'AvenirNext-Heavy', 40,
+		text(str(self.score), GAME_FONT, 40,
 		self.size.w / 2, self.size.h - 65)
 		self.get_score('P1', int(self.score))
