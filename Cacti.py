@@ -44,6 +44,7 @@ class SelectACharacterView(ui.View):
 		return button
 		
 	@classmethod
+	# easy but longer way to add another row of characters
 	def make_button2(cls, x, image_name = 'Cat_Face'):
 		img = ui.Image.named(image_name).with_rendering_mode(ui.RENDERING_MODE_ORIGINAL)
 		button = ui.Button(name=image_name, frame=(x, 365, 128, 128), image=img)
@@ -393,7 +394,7 @@ class Game (Scene):
 			with open(file_name, 'w') as out_file:
 				json.dump(high_scores, out_file)
 
-	def get_score(self, name, score):
+	def get_score(self, name, score): # for displaying current best score
 		file_name = 'highscores.json'
 		high_scores = {}
 
