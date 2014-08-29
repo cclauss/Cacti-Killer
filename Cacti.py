@@ -469,8 +469,9 @@ class Game (Scene):
 		r, g, b = hsv_to_rgb(hue, 1, 1)
 		fill(r, g, b)
 		rect(0, self.size.h - 5, self.energy / 100.0 * self.size.w, 10)
-		text(str(self.score), GAME_FONT, 40,
-		self.size.w / 2, self.size.h - 65)
+		sc = TextLayer(str(self.score), GAME_FONT, 40)
+		sc.frame = (self.size.w / 2, self.size.h - 65)
+		self.effects_layer.add_layer(sc)
 		self.get_score('P1', int(self.score)) # putting this here lets it update as score goes up
 		
 v = ui.load_view('Cacti')
