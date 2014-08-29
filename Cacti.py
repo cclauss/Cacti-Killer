@@ -57,16 +57,6 @@ def play_game(sender):
 	ui.close_all()
 	run(Game(), PORTRAIT)
 
-v = ui.load_view('Cacti')
-v.background_color = (0, 0.02, 0.1)
-
-screensize = ui.get_screen_size()
-if screensize[0] > 768:
-	display = 'landscape'
-else:
-	display = 'portrait'
-v.present(orientations=[display], hide_title_bar=True )
-
 class Star (object):
 	def __init__(self):
 		self.x = randint(0, 768)
@@ -484,3 +474,13 @@ class Game (Scene):
 		text(str(self.score), GAME_FONT, 40,
 		self.size.w / 2, self.size.h - 65)
 		self.get_score('P1', int(self.score))
+		
+v = ui.load_view('Cacti')
+v.background_color = (0, 0.02, 0.1)
+
+screensize = ui.get_screen_size()
+if screensize[0] > 768:
+	display = 'landscape'
+else:
+	display = 'portrait'
+v.present(orientations=[display], hide_title_bar=True )
