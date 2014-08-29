@@ -43,8 +43,7 @@ class SelectACharacterView(ui.View):
 		button.action=cls.character_tapped
 		return button
 		
-	@classmethod
-	# easy but longer way to add another row of characters
+	@classmethod # easy but longer way to add another row of characters
 	def make_button2(cls, x, image_name = 'Cat_Face'):
 		img = ui.Image.named(image_name).with_rendering_mode(ui.RENDERING_MODE_ORIGINAL)
 		button = ui.Button(name=image_name, frame=(x, 365, 128, 128), image=img)
@@ -218,7 +217,6 @@ class Powerup (object):
 			pop_matrix()
 	def bbox(self):
 		return Rect(self.x - 32, self.y - 32, 64, 64)
-
 
 class Bullet (object):
 	def __init__(self, x, y):
@@ -431,8 +429,7 @@ class Game (Scene):
 			ts.animate('scale_y', 1.0, 1.0, curve=curve_bounce_out)
 			self.effects_layer.add_layer(t)
 			self.effects_layer.add_layer(ts)
-		else:
-			# tabs center text on iPhone
+		else: # tabs center text on iPhone
 			t = TextLayer('         Game Over \nTap to Play Again', GAME_FONT, 32)
 			t.frame.center(self.bounds.center())
 			self.delay(2.0, partial(self.__setattr__, 'touch_disabled', False))
@@ -474,14 +471,11 @@ class Game (Scene):
 		rect(0, self.size.h - 5, self.energy / 100.0 * self.size.w, 10)
 		text(str(self.score), GAME_FONT, 40,
 		self.size.w / 2, self.size.h - 65)
-		self.get_score('P1', int(self.score))
+		self.get_score('P1', int(self.score)) # putting this here lets it update as score goes up
 		
 v = ui.load_view('Cacti')
 v.background_color = (0, 0.02, 0.1)
 
 screensize = ui.get_screen_size()
-if screensize[0] > 768:
-	display = 'landscape'
-else:
-	display = 'portrait'
+display = 'landscape' if screensize[0] > 768 else 'portrait'
 v.present(orientations=[display], hide_title_bar=True )
