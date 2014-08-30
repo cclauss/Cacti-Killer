@@ -53,6 +53,7 @@ class SelectACharacterView(ui.View):
 def change_character(sender):
 	SelectACharacterView()
 
+@ui.in_background
 def play_game(sender):
 	sender.superview.close()
 	sender.superview.wait_modal()
