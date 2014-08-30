@@ -54,7 +54,11 @@ def change_character(sender):
 	SelectACharacterView()
 
 def play_game(sender):
-	ui.close_all()
+	sender.superview.close()
+	sender.superview.wait_modal()
+	if sender.superview != v: # Starting game from character selection screen
+		v.close()
+		v.wait_modal()
 	run(Game(), PORTRAIT)
 
 class Star (object):
