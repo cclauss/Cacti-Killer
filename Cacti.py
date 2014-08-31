@@ -1,26 +1,26 @@
 from scene import *
 from random import randint, random, choice
 from sound import play_effect, stop_effect
-from colorsys import hsv_to_rgb
 from math import sin
 from functools import partial
-from copy import copy
-import json, ui
-import motion
+#from copy import copy
+import colorsys, json, motion, ui 
 
 GAME_FONT = 'AvenirNext-Heavy'
-game_character = 'Dog_Face'
 characters = 'Dog_Face Bear_Face Cow_Face'.split()
 characters_row_2 = 'Cat_Face Monkey_Face Hamster_Face'.split()
+game_character = characters[0]
+
+motion.start_updates()
 
 class SelectACharacterView(ui.View):
 	def __init__(self):
 		self.background_color = (0, 0.02, 0.1)
 		self.add_subview(self.make_header())
 		for i, character in enumerate(characters):
-			self.add_subview(self.make_button(40 + i * 155, character))
+			self.add_subview(self.make_button(40 + i * 155, 160, character))
 		for i, character in enumerate(characters_row_2):
-			self.add_subview(self.make_button2(40 + i * 155, character))
+			self.add_subview(self.make_button(40 + i * 155, 365, character))
 
 	@classmethod
 	def make_header(cls):
@@ -38,22 +38,14 @@ class SelectACharacterView(ui.View):
 		root_view.add_subview(scene_view)
 
 	@classmethod
-	def make_button(cls, x, image_name = 'Dog_Face'):
+	def make_button(cls, x, y, image_name = 'Dog_Face'):
 		img = ui.Image.named(image_name).with_rendering_mode(ui.RENDERING_MODE_ORIGINAL)
-		button = ui.Button(name=image_name, frame=(x, 160, 128, 128), image=img)
-		button.action=cls.character_tapped
-		return button
-		
-	@classmethod # easy but longer way to add another row of characters
-	def make_button2(cls, x, image_name = 'Cat_Face'):
-		img = ui.Image.named(image_name).with_rendering_mode(ui.RENDERING_MODE_ORIGINAL)
-		button = ui.Button(name=image_name, frame=(x, 365, 128, 128), image=img)
+		button = ui.Button(name=image_name, frame=(x, y, 128, 128), image=img)
 		button.action=cls.character_tapped
 		return button
 
 def change_character(sender):
-	c = SelectACharacterView()
-	c.present(style='sheet', hide_title_bar=True)
+	SelectACharacterView().present(style='sheet', hide_title_bar=True)
 
 @ui.in_background
 def play_game(sender):
@@ -99,9 +91,7 @@ class Player (object):
 		self.x = scene.size.w / 2
 		self.dead = False
 	def update(self):
-		motion.start_updates()
-		px = motion.get_gravity()
-		gx = px[0] * 50
+		gx = motion.get_gravity()[0] * 50
 		self.x = min(max(self.x + gx, 20), self.scene.size.w - 20)
 	def draw(self):
 		push_matrix()
@@ -213,7 +203,7 @@ class Powerup (object):
 			image('Heart', self.x - s/2, self.y - s/2, s, s)
 		else:
 			push_matrix()
-			tint(*hsv_to_rgb(self.hue, 1, 1))
+			tint(*colorsys.hsv_to_rgb(self.hue, 1, 1))
 			translate(self.x, self.y)
 			rotate(self.rot)
 			image('Snake', -32, -32, 64, 64)
@@ -238,7 +228,7 @@ class Bullet (object):
 			self.hue += 0.02
 	def draw(self):
 		if self.pass_through:
-			fill(*hsv_to_rgb(self.hue, 1, 1))
+			fill(*colorsys.hsv_to_rgb(self.hue, 1, 1))
 			ellipse(self.x - 4, self.y - 4, 8, 8)
 		elif self.bullet_type == 0:
 			fill(1, 1, 0)
@@ -458,7 +448,7 @@ class Game (Scene):
 
 	def draw_status_bar(self):
 		hue = (self.energy / 100.0) * 0.35 + 1.0
-		r, g, b = hsv_to_rgb(hue, 1, 1)
+		r, g, b = colorsys.hsv_to_rgb(hue, 1, 1)
 		fill(r, g, b)
 		rect(0, self.size.h - 5, self.energy / 100.0 * self.size.w, 10)
 		text(str(self.score), GAME_FONT, 40, self.size.w / 2, self.size.h - 65)
