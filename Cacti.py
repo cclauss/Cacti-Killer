@@ -37,6 +37,7 @@ class SelectACharacterView(ui.View):
 		global game_character
 		game_character = sender.name
 		root_view.add_subview(scene_view)
+		root_view.remove_subview(SelectACharacterView()) # this does not work
 
 	@classmethod
 	def make_button(cls, x, y, image_name = 'Dog_Face'):
@@ -93,8 +94,7 @@ class Player (object):
 		self.dead = False
 	def update(self):
 		motion.start_updates()
-		px = motion.get_gravity()
-		gx = px[0] * 50
+		gx = motion.get_gravity()[0] * 50
 		self.x = min(max(self.x + gx, 20), self.scene.size.w - 20)
 	def draw(self):
 		push_matrix()
