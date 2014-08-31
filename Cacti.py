@@ -1,10 +1,8 @@
 from scene import *
 from random import randint, random, choice
 from sound import play_effect, stop_effect
-from math import sin
 from functools import partial
-#from copy import copy
-import colorsys, json, motion, ui 
+import colorsys, json, math, motion, ui 
 
 GAME_FONT = 'AvenirNext-Heavy'
 characters = 'Dog_Face Bear_Face Cow_Face'.split()
@@ -139,7 +137,7 @@ class Enemy (object):
 
 	def update(self, dt):
 		self.y -= self.speed
-		self.x = self.initial_x + sin(self.y / 100) * self.amp
+		self.x = self.initial_x + math.sin(self.y / 100) * self.amp
 		self.amp = max(self.amp * 0.99, 0)
 		if self.y < -64:
 			self.removed = True
@@ -199,7 +197,7 @@ class Powerup (object):
 		self.t += 0.1
 	def draw(self):
 		if self.powerup_type == 0:
-			s = 50 + sin(self.t) * 10
+			s = 50 + math.sin(self.t) * 10
 			image('Heart', self.x - s/2, self.y - s/2, s, s)
 		else:
 			push_matrix()
