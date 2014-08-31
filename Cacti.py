@@ -17,10 +17,12 @@ class SelectACharacterView(ui.View):
 	def __init__(self):
 		self.background_color = (0, 0.02, 0.1)
 		self.add_subview(self.make_header())
+		self.border_width = 1
+		self.border_color = 0.80, 0.80, 0.80
 		for i, character in enumerate(characters):
-			self.add_subview(self.make_button(40 + i * 155, character))
+			self.add_subview(self.make_button(40 + i * 155, 160, character))
 		for i, character in enumerate(characters_row_2):
-			self.add_subview(self.make_button2(40 + i * 155, character))
+			self.add_subview(self.make_button(40 + i * 155, 365, character))
 
 	@classmethod
 	def make_header(cls):
@@ -34,26 +36,17 @@ class SelectACharacterView(ui.View):
 	def character_tapped(cls, sender):
 		global game_character
 		game_character = sender.name
-		root_view.remove_subview(SelectACharacterView()) # this does not work
 		root_view.add_subview(scene_view)
 
 	@classmethod
-	def make_button(cls, x, image_name = 'Dog_Face'):
+	def make_button(cls, x, y, image_name = 'Dog_Face'):
 		img = ui.Image.named(image_name).with_rendering_mode(ui.RENDERING_MODE_ORIGINAL)
-		button = ui.Button(name=image_name, frame=(x, 160, 128, 128), image=img)
+		button = ui.Button(name=image_name, frame=(x, y, 128, 128), image=img)
 		button.action=cls.character_tapped
 		return button
 		
-	@classmethod # easy but longer way to add another row of characters
-	def make_button2(cls, x, image_name = 'Cat_Face'):
-		img = ui.Image.named(image_name).with_rendering_mode(ui.RENDERING_MODE_ORIGINAL)
-		button = ui.Button(name=image_name, frame=(x, 365, 128, 128), image=img)
-		button.action=cls.character_tapped
-		return button
-
 def change_character(sender):
-	c = SelectACharacterView()
-	c.present(style='sheet', hide_title_bar=True)
+	SelectACharacterView().present(style='sheet', hide_title_bar=True)
 
 @ui.in_background
 def play_game(sender):
@@ -472,6 +465,5 @@ root_view = v
 scene_view = SceneView()
 scene_view.frame = (0, 0, w, h)
 scene_view.scene = Game ()
-screensize = ui.get_screen_size()
-display = 'landscape' if screensize[0] > 768 else 'portrait'
+display = 'landscape' if w > 768 else 'portrait'
 root_view.present(orientations=[display], hide_title_bar=True )
