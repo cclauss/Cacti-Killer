@@ -6,6 +6,7 @@ from math import sin
 from functools import partial
 from copy import copy
 import json, ui
+import motion
 
 GAME_FONT = 'AvenirNext-Heavy'
 game_character = 'Dog_Face'
@@ -98,7 +99,9 @@ class Player (object):
 		self.x = scene.size.w / 2
 		self.dead = False
 	def update(self):
-		gx = gravity().x * 50
+		motion.start_updates()
+		px = motion.get_gravity()
+		gx = px[0] * 50
 		self.x = min(max(self.x + gx, 20), self.scene.size.w - 20)
 	def draw(self):
 		push_matrix()
@@ -409,6 +412,7 @@ class Game (Scene):
 			self.size.w / 2, self.size.h - 27)
 
 	def game_over(self):
+		motion.stop_updates()
 		self.player.dead = True
 		self.touch_disabled = True
 		play_effect('Laser_4')
