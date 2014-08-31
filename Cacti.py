@@ -8,7 +8,6 @@ from copy import copy
 import json, ui
 
 GAME_FONT = 'AvenirNext-Heavy'
-view = 'ipad' if ui.get_screen_size()[0] >= 768 else 'iphone'
 game_character = 'Dog_Face'
 characters = 'Dog_Face Bear_Face Cow_Face'.split()
 characters_row_2 = 'Cat_Face Monkey_Face Hamster_Face'.split()
@@ -21,7 +20,6 @@ class SelectACharacterView(ui.View):
 			self.add_subview(self.make_button(40 + i * 155, character))
 		for i, character in enumerate(characters_row_2):
 			self.add_subview(self.make_button2(40 + i * 155, character))
-		self.present(style='sheet', hide_title_bar=True)
 
 	@classmethod
 	def make_header(cls):
@@ -35,10 +33,8 @@ class SelectACharacterView(ui.View):
 	def character_tapped(cls, sender):
 		global game_character
 		game_character = sender.name
-		if sender.superview != v: # Starting game from character selection screen
-			v.close()
-			v.wait_modal()
-		run(Game(), PORTRAIT)
+		root_view.remove_subview(SelectACharacterView()) # this does not work
+		root_view.add_subview(scene_view)
 
 	@classmethod
 	def make_button(cls, x, image_name = 'Dog_Face'):
@@ -55,16 +51,12 @@ class SelectACharacterView(ui.View):
 		return button
 
 def change_character(sender):
-	SelectACharacterView()
+	c = SelectACharacterView()
+	c.present(style='sheet', hide_title_bar=True)
 
 @ui.in_background
 def play_game(sender):
-	sender.superview.close()
-	sender.superview.wait_modal()
-	if sender.superview != v: # Starting game from character selection screen
-		v.close()
-		v.wait_modal()
-	run(Game(), PORTRAIT)
+	root_view.add_subview(scene_view)
 
 class Star (object):
 	def __init__(self):
@@ -390,12 +382,8 @@ class Game (Scene):
 		curr_high_score = high_scores.get(name, score - 1)
 		if score >= curr_high_score:
 			high_scores[name] = score
-			if view == 'ipad':
-				h = TextLayer('NEW HIGH SCORE', GAME_FONT, 69)
-				h.frame.center(self.size.w / 2, self.size.h - 300)
-			else:
-				h = TextLayer('NEW HIGH SCORE', GAME_FONT, 35)
-				h.frame.center(self.size.w / 2, self.size.h - 155)
+			h = TextLayer('NEW HIGH SCORE', GAME_FONT, 69)
+			h.frame.center(self.size.w / 2, self.size.h - 300)
 			play_effect('Coin_5')
 			self.effects_layer.add_layer(h)
 			with open(file_name, 'w') as out_file:
@@ -424,28 +412,19 @@ class Game (Scene):
 		self.player.dead = True
 		self.touch_disabled = True
 		play_effect('Laser_4')
-		if view == 'ipad':
-			t = TextLayer('Game Over', GAME_FONT, 100)
-			ts = TextLayer('Tap to Play Again', GAME_FONT, 50)
-			ts.frame.center(self.size.w / 2, self.size.h - 630)
-			t.frame.center(self.bounds.center())
-			self.delay(2.0, partial(self.__setattr__, 'touch_disabled', False))
-			t.scale_x, t.scale_y = 0.0, 0.0
-			ts.scale_x, ts.scale_y = 0.0, 0.0
-			t.animate('scale_x', 1.0, 1.0, curve=curve_bounce_out)
-			t.animate('scale_y', 1.0, 1.0, curve=curve_bounce_out)
-			ts.animate('scale_x', 1.0, 1.0, curve=curve_bounce_out)
-			ts.animate('scale_y', 1.0, 1.0, curve=curve_bounce_out)
-			self.effects_layer.add_layer(t)
-			self.effects_layer.add_layer(ts)
-		else: # tabs center text on iPhone
-			t = TextLayer('         Game Over \nTap to Play Again', GAME_FONT, 32)
-			t.frame.center(self.bounds.center())
-			self.delay(2.0, partial(self.__setattr__, 'touch_disabled', False))
-			t.scale_x, t.scale_y = 0.0, 0.0
-			t.animate('scale_x', 1.0, 1.0, curve=curve_bounce_out)
-			t.animate('scale_y', 1.0, 1.0, curve=curve_bounce_out)
-			self.effects_layer.add_layer(t)
+		t = TextLayer('Game Over', GAME_FONT, 100)
+		ts = TextLayer('Tap to Play Again', GAME_FONT, 50)
+		ts.frame.center(self.size.w / 2, self.size.h - 630)
+		t.frame.center(self.bounds.center())
+		self.delay(2.0, partial(self.__setattr__, 'touch_disabled', False))
+		t.scale_x, t.scale_y = 0.0, 0.0
+		ts.scale_x, ts.scale_y = 0.0, 0.0
+		t.animate('scale_x', 1.0, 1.0, curve=curve_bounce_out)
+		t.animate('scale_y', 1.0, 1.0, curve=curve_bounce_out)
+		ts.animate('scale_x', 1.0, 1.0, curve=curve_bounce_out)
+		ts.animate('scale_y', 1.0, 1.0, curve=curve_bounce_out)
+		self.effects_layer.add_layer(t)
+		self.effects_layer.add_layer(ts)
 		self.high_score('P1', int(self.score))
 
 	def touch_began(self, touch):
@@ -484,6 +463,11 @@ class Game (Scene):
 v = ui.load_view('Cacti')
 v.background_color = (0, 0.02, 0.1)
 
+w, h = ui.get_screen_size()
+root_view = v
+scene_view = SceneView()
+scene_view.frame = (0, 0, w, h)
+scene_view.scene = Game ()
 screensize = ui.get_screen_size()
 display = 'landscape' if screensize[0] > 768 else 'portrait'
-v.present(orientations=[display], hide_title_bar=True )
+root_view.present(orientations=[display], hide_title_bar=True )
