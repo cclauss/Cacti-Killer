@@ -463,6 +463,5 @@ w, h = ui.get_screen_size()
 root_view = v
 scene_view = SceneView()
 scene_view.frame = (0, 0, w, h)
-scene_view.scene = Game ()
-display = 'landscape' if w > 768 else 'portrait'
-root_view.present(orientations=[display], hide_title_bar=True )
+scene_view.scene = Game()
+root_view.present(orientations=['portrait'], hide_title_bar=True )
