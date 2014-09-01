@@ -4,25 +4,24 @@ from sound import play_effect, stop_effect
 from colorsys import hsv_to_rgb
 from math import sin
 from functools import partial
-from copy import copy
-import json, ui
-import motion
+#from copy import copy
+import json, motion, ui
 
 GAME_FONT = 'AvenirNext-Heavy'
-game_character = 'Dog_Face'
-characters = 'Dog_Face Bear_Face Cow_Face'.split()
-characters_row_2 = 'Cat_Face Monkey_Face Hamster_Face'.split()
+characters = 'Dog_Face Bear_Face Cow_Face Cat_Face Monkey_Face Hamster_Face'.split()
+game_character = characters[0]
 
 class SelectACharacterView(ui.View):
 	def __init__(self):
 		self.background_color = (0, 0.02, 0.1)
-		self.add_subview(self.make_header())
 		self.border_width = 1
-		self.border_color = 0.80, 0.80, 0.80
+		self.border_color = (0.8, 0.8, 0.8)
+		self.add_subview(self.make_header())
+		half = len(characters) / 2
 		for i, character in enumerate(characters):
-			self.add_subview(self.make_button(40 + i * 155, 160, character))
-		for i, character in enumerate(characters_row_2):
-			self.add_subview(self.make_button(40 + i * 155, 365, character))
+			x = 40 + i % half * 155
+			y = 160 if i < half else 365
+			self.add_subview(self.make_button(x, y, character))
 
 	@classmethod
 	def make_header(cls):
