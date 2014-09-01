@@ -4,7 +4,6 @@ from sound import play_effect, stop_effect
 from colorsys import hsv_to_rgb
 from math import sin
 from functools import partial
-#from copy import copy
 import json, motion, ui
 
 GAME_FONT = 'AvenirNext-Heavy'
@@ -37,9 +36,6 @@ class SelectACharacterView(ui.View):
 		game_character = sender.name
 		root_view.add_subview(scene_view)
 		sender.superview.close()
-		#root_view.remove_subview(SelectACharacterView()) # this does not work
-		#while root_view.subviews:
-		#	root_view.remove_subview(root_view.subviews[-1])
 
 	@classmethod
 	def make_button(cls, x, y, image_name = 'Dog_Face'):
