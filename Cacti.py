@@ -53,8 +53,9 @@ def play_game(sender):
 
 class Star (object):
 	def __init__(self):
-		self.x = randint(0, 768)
-		self.y = randint(0, 1024)
+		w, h = ui.get_screen_size()
+		self.x = randint(0, w)
+		self.y = randint(0, h)
 		self.v = random() * 5 + 1
 	def update(self):
 		self.y -= self.v
