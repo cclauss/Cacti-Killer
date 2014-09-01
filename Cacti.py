@@ -10,6 +10,8 @@ GAME_FONT = 'AvenirNext-Heavy'
 characters = 'Dog_Face Bear_Face Cow_Face Cat_Face Monkey_Face Hamster_Face'.split()
 game_character = characters[0]
 
+image_width = 64
+
 class SelectACharacterView(ui.View):
 	def __init__(self):
 		self.background_color = (0, 0.02, 0.1)
@@ -94,7 +96,8 @@ class Player (object):
 	def update(self):
 		motion.start_updates()
 		gx = motion.get_gravity()[0] * 50
-		self.x = min(max(self.x + gx, 20), self.scene.size.w - 20)
+		self.x = min(max(self.x + gx, 20),
+					self.scene.size.w - (20 + image_width))
 	def draw(self):
 		push_matrix()
 		translate(self.x, 20)
@@ -436,13 +439,13 @@ class Game (Scene):
 		if self.shot_fired: return
 		if self.frenzy:
 			for vx in [-3, 0, 3]:
-				bullet = Bullet(self.player.x, 110)
+				bullet = Bullet(self.player.x + image_width/2., 110)
 				bullet.vy = 15
 				bullet.vx = vx
 				bullet.pass_through = True
 				self.bullets.append(bullet)
 		else:
-			bullet = Bullet(self.player.x, 110)
+			bullet = Bullet(self.player.x + image_width/2., 110)
 			bullet.vy = 15
 			self.bullets.append(bullet)
 		play_effect('Laser_6')
