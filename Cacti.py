@@ -7,7 +7,7 @@ from functools import partial
 import json, motion, ui
 
 GAME_FONT = 'AvenirNext-Heavy'
-characters = 'Dog_Face Bear_Face Cow_Face Cat_Face Monkey_Face Hamster_Face'.split()
+characters = [s+'_Face' for s in 'Dog Bear Cow Cat Monkey Hamster'.split()]
 game_character = characters[0]
 
 image_width = 64
@@ -459,12 +459,8 @@ class Game (Scene):
 		text(str(self.score), GAME_FONT, 40, self.size.w / 2, self.size.h - 65)
 		self.get_score('P1', int(self.score)) # putting this here lets it update as score goes up
 		
-v = ui.load_view('Cacti')
-v.background_color = (0, 0.02, 0.1)
-
-w, h = ui.get_screen_size()
-root_view = v
-scene_view = SceneView()
-scene_view.frame = (0, 0, w, h)
+root_view = ui.load_view('Cacti')
+root_view.background_color = (0, 0.02, 0.1)
+scene_view = SceneView(frame=root_view.frame)
 scene_view.scene = Game()
 root_view.present(orientations=['portrait'], hide_title_bar=True )
