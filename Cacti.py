@@ -7,7 +7,8 @@ from functools import partial
 import json, motion, ui
 
 GAME_FONT = 'AvenirNext-Heavy'
-characters = 'Dog_Face Bear_Face Cow_Face Cat_Face Monkey_Face Hamster_Face'.split()
+#characters = 'Dog_Face Bear_Face Cow_Face Cat_Face Monkey_Face Hamster_Face'.split()
+characters = [s + '_Face' for s in 'Dog Bear Cow Cat Monkey Hamster'.split()]
 game_character = characters[0]
 
 image_width = 64
