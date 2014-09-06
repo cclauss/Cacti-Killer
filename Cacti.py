@@ -458,9 +458,11 @@ class Game (Scene):
 		rect(0, self.size.h - 5, self.energy / 100.0 * self.size.w, 10)
 		text(str(self.score), GAME_FONT, 40, self.size.w / 2, self.size.h - 65)
 		self.get_score('P1', int(self.score)) # putting this here lets it update as score goes up
-		
+
+w, h = ui.get_screen_size()
 root_view = ui.load_view('Cacti')
 root_view.background_color = (0, 0.02, 0.1)
-scene_view = SceneView(frame=root_view.frame)
+scene_view = SceneView()
+scene_view.frame = (0, 0, w, h)
 scene_view.scene = Game()
 root_view.present(orientations=['portrait'], hide_title_bar=True )
