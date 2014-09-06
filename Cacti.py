@@ -459,12 +459,21 @@ class Game (Scene):
 		text(str(self.score), GAME_FONT, 40, self.size.w / 2, self.size.h - 65)
 		self.get_score('P1', int(self.score)) # putting this here lets it update as score goes up
 		
-v = ui.load_view('Cacti')
-v.background_color = (0, 0.02, 0.1)
+def close_button():
+    def close_action(sender):
+        sender.superview.superview.close()
 
-w, h = ui.get_screen_size()
-root_view = v
-scene_view = SceneView()
-scene_view.frame = (0, 0, w, h)
+    the_button = ui.Button(title='X')
+    the_button.action = close_action
+    the_button.font=('<system-bold>', 20)
+    the_button.x = ui.get_screen_size()[0] - the_button.width
+    the_button.y = the_button.height * .7
+    return the_button
+
+root_view = ui.load_view('Cacti')
+root_view.background_color = (0, 0.02, 0.1)
+
+scene_view = SceneView(frame=root_view.frame)
+scene_view.add_subview(close_button())
 scene_view.scene = Game()
 root_view.present(orientations=['portrait'], hide_title_bar=True )
