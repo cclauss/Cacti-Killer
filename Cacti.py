@@ -470,5 +470,5 @@ scene_view.hidden = True
 root_view = ui.load_view('Cacti')
 root_view.background_color = (0, 0.02, 0.1)
 root_view.add_subview(scene_view)
-orient = ['portrait', 'portrait-upside-down']
-root_view.present(orientations=orient, hide_title_bar=True)
+orientations = ['portrait', 'portrait-upside-down']
+root_view.present(orientations=orientations, hide_title_bar=True)
